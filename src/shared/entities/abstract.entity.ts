@@ -4,7 +4,7 @@ import { v4 } from 'uuid';
 import moment = require('moment');
 
 export abstract class AbstractEntity {
-  @PrimaryKey({ type: UuidType })
+  @PrimaryKey({ type: UuidType, columnType: 'uuid' })
   public id: EntityId = v4();
 
   @Property({ columnType: 'timestamptz' })
