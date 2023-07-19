@@ -1,3 +1,4 @@
+import { AppConfigModule, AppConfigService } from '@config/app';
 import { DatabaseConfigModule, DatabaseConfigService } from '@config/database';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module } from '@nestjs/common';
@@ -8,18 +9,22 @@ import { nonEnvMikroOrmConfiguration } from './mikro-orm.config';
   imports: [
     MikroOrmModule.forRootAsync({
       contextName: DATABASE_CONTEXT_NAME_CONSTANT,
-      imports: [DatabaseConfigModule],
-      useFactory: (databaseConfig: DatabaseConfigService) => {
+      imports: [DatabaseConfigModule, AppConfigModule],
+      useFactory: (
+        databaseConfig: DatabaseConfigService,
+        appConfig: AppConfigService,
+      ) => {
+        const dbName = `${databaseConfig.dbName}:${appConfig.env}`;
         return {
           ...nonEnvMikroOrmConfiguration,
           port: databaseConfig.port,
           user: databaseConfig.user,
           host: databaseConfig.host,
           password: databaseConfig.password,
-          dbName: databaseConfig.dbName,
+          dbName: dbName,
         };
       },
-      inject: [DatabaseConfigService],
+      inject: [DatabaseConfigService, AppConfigService],
     }),
   ],
 })

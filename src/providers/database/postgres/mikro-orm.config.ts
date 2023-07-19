@@ -5,7 +5,6 @@ import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
 import { Logger } from '@nestjs/common';
 import { AppEnvEnum } from '@shared/enums';
 import { config as dotenvConfig } from 'dotenv';
-import * as process from 'process';
 
 dotenvConfig();
 
@@ -37,9 +36,7 @@ export const nonEnvMikroOrmConfiguration: Omit<
     path: 'dist/database/seeders/',
     pathTs: 'src/database/seeders/',
     defaultSeeder:
-      process.env.NODE_ENV === AppEnvEnum.DEV
-        ? 'DatabaseSeeder'
-        : 'InitialSeeder',
+      process.env.NODE_ENV === AppEnvEnum.DEV ? 'FakeSeeder' : 'InitialSeeder',
   },
 };
 const mikroOrmConfiguration: MikroOrmOptions = {
@@ -47,7 +44,7 @@ const mikroOrmConfiguration: MikroOrmOptions = {
   user: process.env.POSTGRES_USER,
   port: Number(process.env.POSTGRES_PORT),
   password: process.env.POSTGRES_PASSWORD,
-  dbName: process.env.POSTGRES_DB_NAME,
+  dbName: `${process.env.POSTGRES_DB_NAME}:${process.env.NODE_ENV}`,
   ...nonEnvMikroOrmConfiguration,
 };
 export default mikroOrmConfiguration;
