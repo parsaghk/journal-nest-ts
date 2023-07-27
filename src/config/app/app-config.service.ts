@@ -10,6 +10,10 @@ export class AppConfigService {
     return this._configService.get<AppEnvEnum>('app.env') as AppEnvEnum;
   }
 
+  public get rootPath(): string {
+    return process.cwd();
+  }
+
   public get port(): number {
     return this._configService.get<number>('app.port') as number;
   }
