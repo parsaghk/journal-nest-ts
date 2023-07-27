@@ -10,6 +10,7 @@ import {
   AbstractSortDto,
   DateRangeFilterDto,
   NumberRangeFilterDto,
+  PaginationDto,
 } from '@shared/dto';
 import { AbstractEntity } from '@shared/entities';
 import { SortEnum } from '@shared/enums';
@@ -37,6 +38,13 @@ export class MikroOrmHelper {
         {},
       ),
     );
+  }
+
+  public static getPaginationData(pagination: PaginationDto) {
+    return {
+      limit: pagination.pageSize,
+      offset: pagination.pageSize * (pagination.pageIndex - 1),
+    };
   }
 
   public static convertFilterDtoToQueryFilter<
