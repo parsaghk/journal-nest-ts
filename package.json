@@ -18,7 +18,15 @@
     "test:cov": "jest --coverage --config jest-unit.config.json",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "migration:create": "npx mikro-orm migration:create",
+    "migration:up": "mikro-orm migration:up",
+    "migration:down": "mikro-orm migration:down",
+    "migration:list": "mikro-orm migration:list",
+    "migration:pending": "mikro-orm migration:pending",
+    "migration:fresh": "mikro-orm migration:fresh",
+    "seeder:create": "mikro-orm seeder:create",
+    "seeder:run": "mikro-orm seeder:run"
   },
   "dependencies": {
     "@mikro-orm/cli": "^5.7.13",
@@ -40,6 +48,7 @@
     "joi": "^17.9.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
+    "nestjs-i18n": "^10.2.6",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",
@@ -77,5 +86,12 @@
     "ts-node": "^10.9.1",
     "tsconfig-paths": "4.2.0",
     "typescript": "^5.1.6"
+  },
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./dist/providers/database/postgres/mikro-orm.config.js",
+      "./src/providers/database/postgres/mikro-orm.config.js"
+    ]
   }
 }
