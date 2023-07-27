@@ -24,6 +24,7 @@ module.exports = {
         'auth',
         'deps',
         'common',
+        'i18n',
         'config',
         'database',
         'models',
