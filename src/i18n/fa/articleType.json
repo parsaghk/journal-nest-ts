@@ -1,0 +1,5 @@
+{
+  "notFoundArticleTypeErrorMessage": "نوع مقاله یافت نشد",
+  "createArticleTypeSuccessfullyMessage": "نوع مقاله با موفقیت ساخته شد",
+  "updateArticleTypeSuccessfullyMessage": "نوع مقاله با موفقیت ویرایش شد"
+}
