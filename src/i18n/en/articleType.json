@@ -1,5 +1,5 @@
 {
-  "notFoundArticleTypeErrorMessage": "Article type Not found",
-  "createArticleTypeSuccessfullyMessage": "Article type created Successfully",
-  "updateArticleTypeSuccessfullyMessage": "Article type updated Successfully"
+  "notFound": "Article type Not found",
+  "create": "Article type created Successfully",
+  "update": "Article type updated Successfully"
 }
