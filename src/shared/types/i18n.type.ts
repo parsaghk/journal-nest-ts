@@ -12,5 +12,14 @@ export type I18nTranslations = {
         "create": string;
         "update": string;
     };
+    "city": {
+        "notFound": string;
+    };
+    "country": {
+        "notFound": string;
+    };
+    "state": {
+        "notFound": string;
+    };
 };
 export type I18nPath = Path<I18nTranslations>;
