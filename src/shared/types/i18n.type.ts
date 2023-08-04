@@ -21,5 +21,8 @@ export type I18nTranslations = {
     "state": {
         "notFound": string;
     };
+    "user": {
+        "notFound": string;
+    };
 };
 export type I18nPath = Path<I18nTranslations>;

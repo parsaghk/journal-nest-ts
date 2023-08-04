@@ -3,6 +3,7 @@ import { ArticleTypesModule } from '@models/article-types';
 import { CitiesModule } from '@models/cities';
 import { CountriesModule } from '@models/countries';
 import { StatesModule } from '@models/states';
+import { UsersModule } from '@models/users';
 import { Module } from '@nestjs/common';
 
 @Module({
@@ -12,6 +13,7 @@ import { Module } from '@nestjs/common';
     CountriesModule,
     StatesModule,
     CitiesModule,
+    UsersModule,
   ],
 })
 export class ModelsModule {}
