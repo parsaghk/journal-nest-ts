@@ -20,7 +20,7 @@ import {
   UpdateArticleCategoryRequestDto,
 } from './dto';
 
-@Controller('admin/article-categories')
+@Controller('article-categories')
 export class ArticleCategoriesController {
   public constructor(
     private readonly _articleCategoriesService: ArticleCategoriesService,

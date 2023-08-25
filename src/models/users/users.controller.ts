@@ -8,7 +8,7 @@ import {
 } from './dto';
 import { UsersService } from './users.service';
 
-@Controller('admin/users')
+@Controller('users')
 export class UsersController {
   public constructor(private readonly _usersService: UsersService) {}
 

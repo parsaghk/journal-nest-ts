@@ -8,7 +8,7 @@ import {
 } from './dto';
 import { StatesService } from './states.service';
 
-@Controller('admin/states')
+@Controller('states')
 export class StatesController {
   public constructor(private readonly _statesService: StatesService) {}
 

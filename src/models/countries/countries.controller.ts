@@ -8,7 +8,7 @@ import {
   GetSingleCountryResponseDto,
 } from './dto';
 
-@Controller('admin/countries')
+@Controller('countries')
 export class CountriesController {
   public constructor(private readonly _countriesService: CountriesService) {}
 

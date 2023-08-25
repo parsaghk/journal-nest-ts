@@ -19,7 +19,7 @@ import {
   GetSingleArticleTypeResponseDto,
   UpdateArticleTypeRequestDto,
 } from './dto';
-@Controller('admin/article-types')
+@Controller('article-types')
 export class ArticleTypesController {
   public constructor(
     private readonly _articleTypesService: ArticleTypesService,
