@@ -3,9 +3,9 @@ import {
   ConfigModule as NestConfigModule,
   ConfigService as NestConfigService,
 } from '@nestjs/config';
-import * as Joi from 'joi';
 import { authConfiguration } from './auth.configuration';
 import { AuthConfigService } from './auth-config.service';
+import Joi = require('joi');
 
 @Module({
   imports: [

@@ -3,9 +3,9 @@ import {
   ConfigModule as NestConfigModule,
   ConfigService as NestConfigService,
 } from '@nestjs/config';
-import * as Joi from 'joi';
 import { databaseConfiguration } from './database.configuration';
 import { DatabaseConfigService } from './database-config.service';
+import Joi = require('joi');
 
 @Module({
   imports: [
