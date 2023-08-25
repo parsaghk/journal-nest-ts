@@ -30,6 +30,10 @@ export class StatesService {
     return state;
   }
 
+  public getStateListOfCountry(countryId: EntityId) {
+    return this._entityManager.find(State, { country: { id: countryId } });
+  }
+
   public async getStateListAndCount(
     pagination: PaginationDto,
     filters: FilterStatesDto,

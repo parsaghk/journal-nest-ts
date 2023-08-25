@@ -8,16 +8,22 @@ import {
   GetSingleCityResponseDto,
 } from './dto';
 
-@Controller('admin/cities')
+@Controller('cities')
 export class CitiesController {
   public constructor(private readonly _citiesService: CitiesService) {}
 
-  @Get('/:articleId')
-  @Serialize(GetSingleCityResponseDto)
-  public getSingleCity(
-    @Param('articleId', new ParseUUIDPipe()) articleId: EntityId,
+  @Get('/states/:stateId')
+  @Serialize(GetCityListResponseDto)
+  public getCityListOfSate(
+    @Param('stateId', new ParseUUIDPipe()) stateId: EntityId,
   ) {
-    return this._citiesService.getSingleCity(articleId);
+    return this._citiesService.getCityListOfSate(stateId);
+  }
+
+  @Get('/:cityId')
+  @Serialize(GetSingleCityResponseDto)
+  public getSingleCity(@Param('cityId', new ParseUUIDPipe()) cityId: EntityId) {
+    return this._citiesService.getSingleCity(cityId);
   }
 
   @Get('/')

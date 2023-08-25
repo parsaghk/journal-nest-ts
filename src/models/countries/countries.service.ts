@@ -34,6 +34,19 @@ export class CountriesService {
     return country;
   }
 
+  public getAllCountryList(
+    filters: FilterCountriesDto,
+    sorts: SortCountriesDto,
+  ) {
+    return this._entityManager.find(
+      Country,
+      MikroOrmHelper.convertFilterDtoToQueryFilter(filters),
+      {
+        orderBy: MikroOrmHelper.convertSortDtoToQueryOrderList(sorts),
+      },
+    );
+  }
+
   public async getCountryListAndCount(
     pagination: PaginationDto,
     filters: FilterCountriesDto,

@@ -3,6 +3,7 @@ import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
 import { EntityId } from '@shared/types';
 import { CountriesService } from './countries.service';
 import {
+  GetAllCountryListRequestDto,
   GetCountryListRequestDto,
   GetCountryListResponseDto,
   GetSingleCountryResponseDto,
@@ -12,12 +13,20 @@ import {
 export class CountriesController {
   public constructor(private readonly _countriesService: CountriesService) {}
 
-  @Get('/:articleId')
+  @Get('/all')
+  @Serialize(GetCountryListResponseDto)
+  public getAllCountryList(
+    @Query() { sorts, filters }: GetAllCountryListRequestDto,
+  ) {
+    return this._countriesService.getAllCountryList(filters, sorts);
+  }
+
+  @Get('/:countryId')
   @Serialize(GetSingleCountryResponseDto)
   public getSingleCountry(
-    @Param('articleId', new ParseUUIDPipe()) articleId: EntityId,
+    @Param('countryId', new ParseUUIDPipe()) countryId: EntityId,
   ) {
-    return this._countriesService.getSingleCountry(articleId);
+    return this._countriesService.getSingleCountry(countryId);
   }
 
   @Get('/')

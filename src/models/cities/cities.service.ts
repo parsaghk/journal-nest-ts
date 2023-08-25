@@ -30,6 +30,12 @@ export class CitiesService {
     return city;
   }
 
+  public getCityListOfSate(stateId: EntityId) {
+    return this._entityManager.find(City, {
+      state: { id: stateId },
+    });
+  }
+
   public async getCityListAndCount(
     pagination: PaginationDto,
     filters: FilterCitiesDto,
