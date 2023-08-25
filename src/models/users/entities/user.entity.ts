@@ -1,5 +1,7 @@
 import { Entity, Enum, ManyToOne, Property } from '@mikro-orm/core';
 import { City } from '@models/cities';
+import { Country } from '@models/countries';
+import { State } from '@models/states';
 import { AbstractEntity } from '@shared/entities';
 import { UserStatus } from '../enums';
 
@@ -40,6 +42,12 @@ export class User extends AbstractEntity {
 
   @ManyToOne(() => City, { nullable: true })
   public city?: City;
+
+  @ManyToOne(() => State, { nullable: true })
+  public state?: State;
+
+  @ManyToOne(() => Country)
+  public country: Country;
 
   @Property({ nullable: true })
   public postalCode?: string;
