@@ -21,9 +21,12 @@ import { v4 } from 'uuid';
 import {
   AuthenticationResponseDto,
   LoginRequestDto,
+  LogoutRequestDto,
   RegisterRequestDto,
 } from './dto';
 import bcrypt = require('bcrypt');
+import { GeneralResponseDto } from '@shared/dto';
+import { JwtPayload } from './types';
 
 @Injectable()
 export class AuthService {
@@ -42,7 +45,7 @@ export class AuthService {
       username: inputs.username,
     });
     if (userWithSameUsername) {
-      throw new BadRequestException(this._i18n.t('user.username-exists'));
+      throw new BadRequestException(this._i18n.t('auth.username-already-used'));
     }
     const city = await this._entityManager.findOne(City, {
       id: inputs.cityId,
@@ -101,6 +104,32 @@ export class AuthService {
         accessToken,
         refreshToken,
       },
+    };
+  }
+
+  public async logout(
+    inputs: LogoutRequestDto,
+    refreshTokenJwtPayload: JwtPayload,
+  ): Promise<GeneralResponseDto> {
+    const accessTokenTokenJwtPayload = this._jwtService.decode(
+      inputs.accessToken,
+    ) as JwtPayload | null;
+    if (!accessTokenTokenJwtPayload)
+      throw new BadRequestException('invalid token');
+    if (
+      accessTokenTokenJwtPayload.securityTimestamp !==
+      refreshTokenJwtPayload.securityTimestamp
+    )
+      throw new BadRequestException('invalid token');
+    if (accessTokenTokenJwtPayload.sub !== refreshTokenJwtPayload.sub)
+      throw new BadRequestException('invalid token');
+    const userToken = await this._entityManager.findOneOrFail(UserToken, {
+      securityTimestamp: accessTokenTokenJwtPayload.securityTimestamp,
+    });
+    await this._entityManager.removeAndFlush(userToken);
+    return {
+      isSuccess: true,
+      message: this._i18n.t('auth.logout.success'),
     };
   }
 

@@ -1,8 +1,15 @@
-import { RegisterRequestDto } from '@auth/dto/register-request-dto/register-request.dto';
-import { Serialize } from '@common/decorators';
-import { Body, Controller, Post } from '@nestjs/common';
+import { CurrentUser, Serialize } from '@common/decorators';
+import { RefreshTokenGuard } from '@common/guards';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { GeneralResponseDto } from '@shared/dto';
 import { AuthService } from './auth.service';
-import { AuthenticationResponseDto, LoginRequestDto } from './dto';
+import {
+  AuthenticationResponseDto,
+  LoginRequestDto,
+  LogoutRequestDto,
+  RegisterRequestDto,
+} from './dto';
+import { JwtPayload } from './types';
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +21,16 @@ export class AuthController {
     @Body() inputs: LoginRequestDto,
   ): Promise<AuthenticationResponseDto> {
     return this._authService.login(inputs);
+  }
+
+  @Post('/logout')
+  @Serialize(GeneralResponseDto)
+  @UseGuards(RefreshTokenGuard)
+  public logout(
+    @Body() inputs: LogoutRequestDto,
+    @CurrentUser() user: JwtPayload,
+  ): Promise<GeneralResponseDto> {
+    return this._authService.logout(inputs, user);
   }
 
   @Post('/register')

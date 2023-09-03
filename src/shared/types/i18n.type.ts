@@ -12,6 +12,12 @@ export type I18nTranslations = {
         "create": string;
         "update": string;
     };
+    "auth": {
+        "username-already-used": string;
+        "logout": {
+            "success": string;
+        };
+    };
     "city": {
         "notFound": string;
     };
