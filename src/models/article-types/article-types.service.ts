@@ -2,7 +2,11 @@ import { MikroOrmHelper } from '@common/helpers';
 import { wrap } from '@mikro-orm/core';
 import { InjectEntityManager } from '@mikro-orm/nestjs';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { DATABASE_CONTEXT_NAME_CONSTANT } from '@shared/constants';
 import {
   EntityListResponseDto,
@@ -68,6 +72,18 @@ export class ArticleTypesService {
   public async createArticleType(
     inputs: CreateArticleTypeRequestDto,
   ): Promise<GeneralResponseDto> {
+    const articleTypeWithDuplicateTitle = await this._entityManager.findOne(
+      ArticleType,
+      {
+        title: inputs.title,
+      },
+    );
+    if (articleTypeWithDuplicateTitle)
+      throw new BadRequestException(
+        this._i18n.translate('articleType.duplicate-title', {
+          lang: I18nContext.current()?.lang,
+        }),
+      );
     const articleType = new ArticleType(inputs.title);
     await this._entityManager.persistAndFlush(articleType);
     return {

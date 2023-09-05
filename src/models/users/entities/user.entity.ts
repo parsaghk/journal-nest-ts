@@ -16,7 +16,7 @@ export class User extends AbstractEntity {
   @Property()
   public lastName: string;
 
-  @Property()
+  @Property({ unique: true })
   public username: string;
 
   @Property()

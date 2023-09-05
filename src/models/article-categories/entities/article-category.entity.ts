@@ -3,7 +3,7 @@ import { AbstractEntity } from '@shared/entities';
 
 @Entity()
 export class ArticleCategory extends AbstractEntity {
-  @Property()
+  @Property({ unique: true })
   public title: string;
 
   public constructor(title: string) {

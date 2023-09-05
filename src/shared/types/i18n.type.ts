@@ -3,11 +3,13 @@
 import { Path } from "nestjs-i18n";
 export type I18nTranslations = {
     "articleCategory": {
+        "duplicate-title": string;
         "notFound": string;
         "create": string;
         "update": string;
     };
     "articleType": {
+        "duplicate-title": string;
         "notFound": string;
         "create": string;
         "update": string;
