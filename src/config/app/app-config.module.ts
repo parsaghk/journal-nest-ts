@@ -1,7 +1,7 @@
-import { AppConfigService } from '@config/app/app-config.service';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppEnvEnum } from '@shared/enums';
+import { AppConfigService } from './app-config.service';
 import { appConfiguration } from './app-configuration';
 import Joi = require('joi');
 

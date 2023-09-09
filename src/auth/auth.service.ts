@@ -6,8 +6,7 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { City } from '@models/cities';
 import { Country } from '@models/countries';
 import { State } from '@models/states';
-import { User } from '@models/users';
-import { UserToken } from '@models/users/entities/user-token.entity';
+import { User, UserToken } from '@models/users';
 import {
   BadRequestException,
   Injectable,
