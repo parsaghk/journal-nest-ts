@@ -25,6 +25,12 @@ export class ArticleTypesController {
     private readonly _articleTypesService: ArticleTypesService,
   ) {}
 
+  @Get('/all')
+  @Serialize(GetArticleTypeListResponseDto)
+  public getAllArticleTypeList() {
+    return this._articleTypesService.getAllArticleTypeList();
+  }
+
   @Get('/:articleId')
   @Serialize(GetSingleArticleTypeResponseDto)
   public getSingleArticleType(

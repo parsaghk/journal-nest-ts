@@ -69,6 +69,10 @@ export class ArticleCategoriesService {
     );
   }
 
+  public getAllArticleCategoryList() {
+    return this._entityManager.find(ArticleCategory, {});
+  }
+
   public async createArticleCategory(
     inputs: CreateArticleCategoryRequestDto,
   ): Promise<GeneralResponseDto> {
@@ -103,7 +107,7 @@ export class ArticleCategoriesService {
     await this._entityManager.persistAndFlush(article);
     return {
       isSuccess: true,
-      message: this._i18n.t('articleType.update', {
+      message: this._i18n.t('articleCategory.update', {
         lang: I18nContext.current()?.lang,
       }),
     };

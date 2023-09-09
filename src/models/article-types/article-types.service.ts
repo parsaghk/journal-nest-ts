@@ -46,6 +46,10 @@ export class ArticleTypesService {
     return articleType;
   }
 
+  public getAllArticleTypeList() {
+    return this._entityManager.find(ArticleType, {});
+  }
+
   public async getArticleTypeListAndCount(
     pagination: PaginationDto,
     filters: FilterArticleTypesDto,

@@ -1,4 +1,4 @@
-import { SortArticleTypesDto } from '@models/article-types/dto/get-article-type-list-request-dto/sort-article-types.dto';
+import { SortArticleTypesDto } from '@models/article-types';
 import { PaginationDto } from '@shared/dto';
 import { Type } from 'class-transformer';
 import { IsObject, IsOptional, ValidateNested } from 'class-validator';

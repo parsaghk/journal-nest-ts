@@ -26,6 +26,12 @@ export class ArticleCategoriesController {
     private readonly _articleCategoriesService: ArticleCategoriesService,
   ) {}
 
+  @Get('/all')
+  @Serialize(GetArticleCategoryListResponseDto)
+  public getAllArticleCategoryList() {
+    return this._articleCategoriesService.getAllArticleCategoryList();
+  }
+
   @Get('/:articleId')
   @Serialize(GetSingleArticleCategoryResponseDto)
   public getSingleArticleCategory(
