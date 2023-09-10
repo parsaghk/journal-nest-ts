@@ -1,5 +1,6 @@
 import { ArticleCategoriesModule } from '@models/article-categories';
 import { ArticleTypesModule } from '@models/article-types';
+import { ArticlesModule } from '@models/articles';
 import { CitiesModule } from '@models/cities';
 import { CountriesModule } from '@models/countries';
 import { StatesModule } from '@models/states';
@@ -11,6 +12,7 @@ import { Module } from '@nestjs/common';
   imports: [
     ArticleCategoriesModule,
     ArticleTypesModule,
+    ArticlesModule,
     CountriesModule,
     StatesModule,
     CitiesModule,

@@ -8,8 +8,7 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()
-    .setTitle('Nestjs boiler plate')
-    .setDescription('The Nestjs boiler plate description')
+    .setTitle('Journal system')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
