@@ -65,8 +65,17 @@ export class QuestionsService {
     );
   }
 
-  public getAllQuestionList() {
-    return this._entityManager.find(Question, {});
+  public getAllQuestionList(
+    filters: FilterQuestionsDto,
+    sorts: SortQuestionsDto,
+  ) {
+    return this._entityManager.find(
+      Question,
+      MikroOrmHelper.convertFilterDtoToQueryFilter(filters),
+      {
+        orderBy: MikroOrmHelper.convertSortDtoToQueryOrderList(sorts),
+      },
+    );
   }
 
   public async createQuestion(

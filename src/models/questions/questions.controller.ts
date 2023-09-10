@@ -14,6 +14,7 @@ import { GeneralResponseDto } from '@shared/dto';
 import { EntityId } from '@shared/types';
 import {
   CreateQuestionRequestDto,
+  GetAllQuestionListRequestDto,
   GetQuestionListRequestDto,
   GetQuestionListResponseDto,
   GetSingleQuestionResponseDto,
@@ -27,8 +28,10 @@ export class QuestionsController {
 
   @Get('/all')
   @Serialize(GetQuestionListResponseDto)
-  public getAllQuestionList() {
-    return this._questionsService.getAllQuestionList();
+  public getAllQuestionList(
+    @Query() { filters, sorts }: GetAllQuestionListRequestDto,
+  ) {
+    return this._questionsService.getAllQuestionList(filters, sorts);
   }
 
   @Get('/:questionId')
