@@ -1,6 +1,7 @@
 import { CurrentUser, Serialize } from '@common/decorators';
 import { RefreshTokenGuard } from '@common/guards';
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { GeneralResponseDto } from '@shared/dto';
 import { AuthService } from './auth.service';
 import {
@@ -11,6 +12,7 @@ import {
 } from './dto';
 import { JwtPayload } from './types';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   public constructor(private readonly _authService: AuthService) {}

@@ -9,6 +9,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { GeneralResponseDto } from '@shared/dto';
 import { EntityId } from '@shared/types';
 import { ArticleCategoriesService } from './article-categories.service';
@@ -19,7 +20,7 @@ import {
   GetSingleArticleCategoryResponseDto,
   UpdateArticleCategoryRequestDto,
 } from './dto';
-
+@ApiTags('Article Categories')
 @Controller('article-categories')
 export class ArticleCategoriesController {
   public constructor(

@@ -1,5 +1,6 @@
 import { Serialize } from '@common/decorators';
 import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { EntityId } from '@shared/types';
 import {
   GetSingleStateResponseDto,
@@ -8,6 +9,7 @@ import {
 } from './dto';
 import { StatesService } from './states.service';
 
+@ApiTags('Article States')
 @Controller('states')
 export class StatesController {
   public constructor(private readonly _statesService: StatesService) {}

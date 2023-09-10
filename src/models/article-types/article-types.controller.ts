@@ -9,6 +9,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { GeneralResponseDto } from '@shared/dto';
 import { EntityId } from '@shared/types';
 import { ArticleTypesService } from './article-types.service';
@@ -19,6 +20,7 @@ import {
   GetSingleArticleTypeResponseDto,
   UpdateArticleTypeRequestDto,
 } from './dto';
+@ApiTags('Article Types')
 @Controller('article-types')
 export class ArticleTypesController {
   public constructor(
