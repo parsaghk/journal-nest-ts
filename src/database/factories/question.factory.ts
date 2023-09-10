@@ -7,7 +7,7 @@ export class QuestionFactory extends Factory<Question> {
 
   protected definition(faker: Faker): EntityData<Question> {
     return {
-      content: faker.lorem.text(),
+      content: faker.lorem.sentence(),
       type: faker.helpers.arrayElement(Object.values(QuestionTypeEnum)),
     };
   }
