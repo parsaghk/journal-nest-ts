@@ -5,6 +5,7 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { ArticleCategory } from '@models/article-categories';
 import { ArticleType } from '@models/article-types';
 import { FilterCitiesDto } from '@models/cities';
+import { Question, QuestionTypeEnum } from '@models/questions';
 import { Storage } from '@models/storage';
 import { User } from '@models/users';
 import {
@@ -27,7 +28,7 @@ import {
   SortArticlesDto,
   UpdateArticleRequestDto,
 } from './dto';
-import { Article } from './entities';
+import { Article, ArticleQuestion } from './entities';
 
 @Injectable()
 export class ArticlesService {
@@ -95,7 +96,39 @@ export class ArticlesService {
     });
     if (storageList.length !== inputs.fileIdList.length)
       throw new BadRequestException('files not found');
-    const owner = await this._entityManager.findOneOrFail(User, { id: userId });
+
+    const questionListOfSubmittingArticle = await this._entityManager.find(
+      Question,
+      {
+        id: {
+          $in: inputs.articleQuestionList.map(
+            (articleQuestion) => articleQuestion.questionId,
+          ),
+        },
+        type: QuestionTypeEnum.SUBMITTING_ARTICLE,
+      },
+    );
+    if (
+      questionListOfSubmittingArticle.length !==
+      inputs.articleQuestionList.length
+    ) {
+      throw new BadRequestException('please answer all the questions');
+    }
+    const articleQuestionList = inputs.articleQuestionList.map(
+      (articleQuestionRequestDto) => {
+        const articleQuestion = new ArticleQuestion(
+          articleQuestionRequestDto.reply,
+        );
+        const question = questionListOfSubmittingArticle.find(
+          (question) => question.id === articleQuestionRequestDto.questionId,
+        );
+        wrap(articleQuestion).assign({ question });
+        return articleQuestion;
+      },
+    );
+    const owner = await this._entityManager.findOneOrFail(User, {
+      id: userId,
+    });
     const article = new Article(
       articleType,
       articleCategory,
@@ -104,7 +137,10 @@ export class ArticlesService {
       inputs.keywordList,
       owner,
     );
-    wrap(article).assign({ fileList: storageList });
+    wrap(article).assign({
+      fileList: storageList,
+      articleQuestionList: articleQuestionList,
+    });
     await this._entityManager.persistAndFlush(article);
     return {
       isSuccess: true,

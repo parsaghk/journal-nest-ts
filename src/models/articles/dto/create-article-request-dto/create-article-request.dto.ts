@@ -1,4 +1,5 @@
 import { EntityId } from '@shared/types';
+import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
@@ -6,7 +7,9 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  ValidateNested,
 } from 'class-validator';
+import { ArticleQuestionRequestDto } from './article-question-request.dto';
 
 export class CreateArticleRequestDto {
   @IsUUID()
@@ -40,4 +43,9 @@ export class CreateArticleRequestDto {
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
   public readonly keywordList: string[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ArticleQuestionRequestDto)
+  public readonly articleQuestionList: ArticleQuestionRequestDto[];
 }

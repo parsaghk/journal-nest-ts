@@ -1,4 +1,5 @@
-import { Entity, Enum, Property } from '@mikro-orm/core';
+import { Entity, Enum, OneToMany, Property } from '@mikro-orm/core';
+import { ArticleQuestion } from '@models/articles';
 import { AbstractEntity } from '@shared/entities';
 import { QuestionTypeEnum } from '../enums';
 
@@ -9,6 +10,12 @@ export class Question extends AbstractEntity {
 
   @Enum(() => QuestionTypeEnum)
   public readonly type: QuestionTypeEnum;
+
+  @OneToMany(
+    () => ArticleQuestion,
+    (articleQuestion) => articleQuestion.question,
+  )
+  public articleQuestionList: ArticleQuestion;
 
   public constructor(content: string, type: QuestionTypeEnum) {
     super();

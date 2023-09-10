@@ -1,9 +1,18 @@
-import { Entity, Enum, ManyToOne, Property } from '@mikro-orm/core';
+import {
+  Cascade,
+  Entity,
+  Enum,
+  ManyToOne,
+  OneToMany,
+  Property,
+} from '@mikro-orm/core';
 import { ArticleCategory } from '@models/article-categories';
 import { ArticleType } from '@models/article-types';
 import { User } from '@models/users';
 import { AbstractEntity } from '@shared/entities';
 import { ArticleStatusEnum } from '../enums';
+import { ArticleQuestion } from './article-question.entity';
+import { ArticleStatusHistory } from './article-status-history.entity';
 
 @Entity()
 export class Article extends AbstractEntity {
@@ -32,6 +41,9 @@ export class Article extends AbstractEntity {
   public readonly status: ArticleStatusEnum;
 
   @Property({ type: 'json' })
+  public statusHistory: ArticleStatusHistory[] = [];
+
+  @Property({ type: 'json' })
   public readonly fileList: Storage[];
 
   @ManyToOne(() => ArticleCategory)
@@ -39,6 +51,15 @@ export class Article extends AbstractEntity {
 
   @ManyToOne(() => User)
   public readonly owner: User;
+
+  @OneToMany(
+    () => ArticleQuestion,
+    (articleQuestion) => articleQuestion.article,
+    {
+      cascade: [Cascade.PERSIST],
+    },
+  )
+  public articleQuestionList: ArticleQuestion[];
 
   public constructor(
     type: ArticleType,
