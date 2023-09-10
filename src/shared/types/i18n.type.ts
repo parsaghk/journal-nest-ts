@@ -26,6 +26,11 @@ export type I18nTranslations = {
     "country": {
         "notFound": string;
     };
+    "question": {
+        "notFound": string;
+        "create": string;
+        "update": string;
+    };
     "state": {
         "notFound": string;
     };
