@@ -8,6 +8,12 @@ export type I18nTranslations = {
         "create": string;
         "update": string;
     };
+    "articleFileType": {
+        "duplicate-title": string;
+        "notFound": string;
+        "create": string;
+        "update": string;
+    };
     "articleType": {
         "duplicate-title": string;
         "notFound": string;
