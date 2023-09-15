@@ -9,9 +9,18 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
+import { ArticleFileRequestDto } from './article-file-request.dto';
 import { ArticleQuestionRequestDto } from './article-question-request.dto';
 
 export class CreateArticleRequestDto {
+  @IsString()
+  @IsNotEmpty()
+  public readonly subject: string;
+
+  @IsString()
+  @IsNotEmpty()
+  public readonly shortDescription: string;
+
   @IsUUID()
   public readonly articleTypeId: EntityId;
 
@@ -20,8 +29,9 @@ export class CreateArticleRequestDto {
 
   @IsArray()
   @ArrayMinSize(1)
-  @IsUUID('4', { each: true })
-  public readonly fileIdList: EntityId[];
+  @ValidateNested({ each: true })
+  @Type(() => ArticleFileRequestDto)
+  public readonly fileList: ArticleFileRequestDto[];
 
   @IsOptional()
   @IsString()
@@ -47,5 +57,5 @@ export class CreateArticleRequestDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ArticleQuestionRequestDto)
-  public readonly articleQuestionList: ArticleQuestionRequestDto[];
+  public readonly questionList: ArticleQuestionRequestDto[];
 }

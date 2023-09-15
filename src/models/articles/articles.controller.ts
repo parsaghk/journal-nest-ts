@@ -20,6 +20,7 @@ import {
   CreateArticleRequestDto,
   getArticleListRequestDto,
   GetSingleArticleResponseDto,
+  ProcessArticleRequestDto,
   UpdateArticleRequestDto,
 } from './dto';
 
@@ -36,14 +37,22 @@ export class ArticlesController {
     return this._articlesService.getSingleArticleById(articleId);
   }
 
-  @Get()
+  @Get('/')
   public getArticleList(
     @Query() { filters, pagination, sorts }: getArticleListRequestDto,
   ) {
     return this._articlesService.getArticleList(pagination, filters, sorts);
   }
 
-  @Post()
+  @Post('/:articleId/process')
+  public processArticle(
+    @Param('articleId') articleId: EntityId,
+    inputs: ProcessArticleRequestDto,
+  ) {
+    return this._articlesService.processArticle(articleId, inputs);
+  }
+
+  @Post('/')
   @UseGuards(AccessTokenGuard)
   @Serialize(GeneralResponseDto)
   public createArticle(

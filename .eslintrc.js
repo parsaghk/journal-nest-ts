@@ -36,7 +36,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/lines-between-class-members': 'error',
-    '@typescript-eslint/member-ordering': 'error',
+    // '@typescript-eslint/member-ordering': 'error',
     '@typescript-eslint/naming-convention': [
       'error',
       {
