@@ -1,15 +1,12 @@
-import { City } from '@models/cities';
-import { UserStatus } from '@models/users';
+import { RoleEnum, UserStatus } from '@models/users';
 import { AbstractEntityDto } from '@shared/dto';
-import { Expose, Type } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
 export class GetUserListResponseDto extends AbstractEntityDto {
   @Expose()
   public firstName: string;
 
   @Expose()
-  public middleName?: string;
-
   @Expose()
   public lastName: string;
 
@@ -23,21 +20,5 @@ export class GetUserListResponseDto extends AbstractEntityDto {
   public status: UserStatus;
 
   @Expose()
-  public position?: string;
-
-  @Expose()
-  public institution?: string;
-
-  @Expose()
-  public department?: string;
-
-  @Expose()
-  public address?: string;
-
-  @Expose()
-  @Type(() => City)
-  public city?: City;
-
-  @Expose()
-  public postalCode?: string;
+  public readonly roleList: RoleEnum[];
 }

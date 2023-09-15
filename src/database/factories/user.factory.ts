@@ -1,7 +1,7 @@
 import { GeneralHelper } from '@common/helpers';
 import { EntityData } from '@mikro-orm/core';
 import { Factory, Faker } from '@mikro-orm/seeder';
-import { User, UserStatus } from '@models/users';
+import { RoleEnum, User, UserStatus } from '@models/users';
 
 export class UserFactory extends Factory<User> {
   public model = User;
@@ -22,6 +22,7 @@ export class UserFactory extends Factory<User> {
       institution: faker.lorem.words(),
       position: faker.lorem.words(),
       password: GeneralHelper.hashPassword('1234'),
+      roleList: faker.helpers.arrayElements(Object.values(RoleEnum)),
     };
   }
 }

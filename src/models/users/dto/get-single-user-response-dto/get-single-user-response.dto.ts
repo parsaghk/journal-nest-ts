@@ -1,5 +1,5 @@
 import { City } from '@models/cities';
-import { UserStatus } from '@models/users';
+import { RoleEnum, UserStatus } from '@models/users';
 import { AbstractEntityDto } from '@shared/dto';
 import { Expose, Type } from 'class-transformer';
 
@@ -40,4 +40,7 @@ export class GetSingleUserResponseDto extends AbstractEntityDto {
 
   @Expose()
   public postalCode?: string;
+
+  @Expose()
+  public readonly roleList: RoleEnum[];
 }
