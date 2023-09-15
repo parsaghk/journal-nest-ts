@@ -15,7 +15,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
 import { EntityId } from '@shared/types';
 import { Response } from 'express';
-import { StorageDto } from './dto';
+import { StorageResponseDto } from './dto';
 import { StorageService } from './storage.service';
 
 @ApiTags('Storage')
@@ -39,7 +39,7 @@ export class StorageController {
   }
 
   @Post('upload')
-  @Serialize(StorageDto)
+  @Serialize(StorageResponseDto)
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(FileInterceptor('file'))
   public uploadFile(

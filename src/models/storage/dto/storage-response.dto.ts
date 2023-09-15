@@ -1,7 +1,7 @@
 import { AbstractEntityDto } from '@shared/dto';
 import { Expose } from 'class-transformer';
 
-export class StorageDto extends AbstractEntityDto {
+export class StorageResponseDto extends AbstractEntityDto {
   @Expose()
   public readonly mimeType: string;
 
