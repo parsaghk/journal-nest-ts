@@ -6,4 +6,7 @@ export class UserSummaryInfoDto {
 
   @Expose()
   public readonly lastName: string;
+
+  @Expose()
+  public readonly roleList: string[];
 }

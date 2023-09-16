@@ -1,6 +1,6 @@
 import { CurrentUser, Serialize } from '@common/decorators';
-import { RefreshTokenGuard } from '@common/guards';
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { AccessTokenGuard, RefreshTokenGuard } from '@common/guards';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { GeneralResponseDto } from '@shared/dto';
 import { AuthService } from './auth.service';
@@ -9,6 +9,7 @@ import {
   LoginRequestDto,
   LogoutRequestDto,
   RegisterRequestDto,
+  UserSummaryInfoDto,
 } from './dto';
 import { JwtPayload } from './types';
 
@@ -16,6 +17,13 @@ import { JwtPayload } from './types';
 @Controller('auth')
 export class AuthController {
   public constructor(private readonly _authService: AuthService) {}
+
+  @Get('/whoami')
+  @UseGuards(AccessTokenGuard)
+  @Serialize(UserSummaryInfoDto)
+  public whoami(@CurrentUser() user: JwtPayload) {
+    return this._authService.whoami(user.sub);
+  }
 
   @Post('/login')
   @Serialize(AuthenticationResponseDto)

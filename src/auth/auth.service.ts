@@ -37,6 +37,10 @@ export class AuthService {
     private readonly _i18n: I18nService<I18nTranslations>,
   ) {}
 
+  public async whoami(userId: EntityId) {
+    return this._entityManager.findOneOrFail(User, { id: userId });
+  }
+
   public async register(
     inputs: RegisterRequestDto,
   ): Promise<AuthenticationResponseDto> {
