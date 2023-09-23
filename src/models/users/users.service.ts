@@ -8,6 +8,7 @@ import { EntityId, I18nTranslations } from '@shared/types';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { FilterUsersDto, GetUserListResponseDto, SortUsersDto } from './dto';
 import { User } from './entities';
+import { RoleEnum } from './enums';
 
 @Injectable()
 export class UsersService {
@@ -28,6 +29,18 @@ export class UsersService {
         }),
       );
     return user;
+  }
+
+  public getAllJurorList() {
+    return this._entityManager.find<User>(User, {
+      roleList: { $contains: [RoleEnum.JUROR] },
+    });
+  }
+
+  public getAllEditorList() {
+    return this._entityManager.find<User>(User, {
+      roleList: { $contains: [RoleEnum.EDITOR] },
+    });
   }
 
   public async getUserListAndCount(

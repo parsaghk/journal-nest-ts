@@ -14,12 +14,22 @@ import { UsersService } from './users.service';
 export class UsersController {
   public constructor(private readonly _usersService: UsersService) {}
 
-  @Get('/:articleId')
+  @Get('/jurors')
+  @Serialize(GetUserListResponseDto)
+  public getAllJurorList() {
+    return this._usersService.getAllJurorList();
+  }
+
+  @Get('/editors')
+  @Serialize(GetUserListResponseDto)
+  public getAllEditorList() {
+    return this._usersService.getAllEditorList();
+  }
+
+  @Get('/:userId')
   @Serialize(GetSingleUserResponseDto)
-  public getSingleUser(
-    @Param('articleId', new ParseUUIDPipe()) articleId: EntityId,
-  ) {
-    return this._usersService.getSingleUser(articleId);
+  public getSingleUser(@Param('userId', new ParseUUIDPipe()) userId: EntityId) {
+    return this._usersService.getSingleUser(userId);
   }
 
   @Get('/')
