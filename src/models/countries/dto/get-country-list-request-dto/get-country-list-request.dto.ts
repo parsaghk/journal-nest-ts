@@ -1,3 +1,4 @@
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { PaginationDto } from '@shared/dto';
 import { Type } from 'class-transformer';
 import { IsObject, IsOptional, ValidateNested } from 'class-validator';
@@ -8,17 +9,20 @@ export class GetCountryListRequestDto {
   @IsObject()
   @ValidateNested()
   @Type(() => FilterCountriesDto)
-  public readonly filters = new FilterCountriesDto();
+  @ApiPropertyOptional({ type: () => FilterCountriesDto })
+  public readonly filters: FilterCountriesDto = new FilterCountriesDto();
 
   @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => PaginationDto)
+  @ApiPropertyOptional({ type: () => PaginationDto })
   public readonly pagination: PaginationDto = new PaginationDto();
 
   @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => SortCountriesDto)
+  @ApiPropertyOptional({ type: () => SortCountriesDto })
   public readonly sorts: SortCountriesDto = new SortCountriesDto();
 }
