@@ -5,41 +5,41 @@ import { Expose, Type } from 'class-transformer';
 
 export class GetSingleUserResponseDto extends AbstractEntityDto {
   @Expose()
-  public firstName: string;
+  public readonly firstName: string;
 
   @Expose()
-  public middleName?: string;
+  public readonly middleName?: string;
 
   @Expose()
-  public lastName: string;
+  public readonly lastName: string;
 
   @Expose()
-  public username: string;
+  public readonly username: string;
 
   @Expose()
-  public email: string;
+  public readonly email: string;
 
   @Expose()
-  public status: UserStatus;
+  public readonly status: UserStatus;
 
   @Expose()
-  public position?: string;
+  public readonly position?: string;
 
   @Expose()
-  public institution?: string;
+  public readonly institution?: string;
 
   @Expose()
-  public department?: string;
+  public readonly department?: string;
 
   @Expose()
-  public address?: string;
+  public readonly address?: string;
 
   @Expose()
   @Type(() => City)
-  public city?: City;
+  public readonly city?: City;
 
   @Expose()
-  public postalCode?: string;
+  public readonly postalCode?: string;
 
   @Expose()
   public readonly roleList: RoleEnum[];
