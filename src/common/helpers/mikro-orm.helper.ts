@@ -14,8 +14,7 @@ import {
 } from '@shared/dto';
 import { AbstractEntity } from '@shared/entities';
 import { SortEnum } from '@shared/enums';
-import { unflatten } from 'flat';
-import flatten = require('flat');
+import { flatten, unflatten } from 'flat';
 import moment = require('moment');
 import _ = require('lodash');
 
