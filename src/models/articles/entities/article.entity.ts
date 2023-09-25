@@ -60,8 +60,15 @@ export class Article extends AbstractEntity {
   })
   public readonly status: ArticleStatusEnum;
 
-  @Property({ type: 'json' })
-  public statusHistory: ArticleStatusHistory[] = [];
+  @OneToMany(
+    () => ArticleStatusHistory,
+    (statusHistory) => statusHistory.article,
+    {
+      orphanRemoval: true,
+      cascade: [Cascade.PERSIST],
+    },
+  )
+  public statusHistoryCollection = new Collection<ArticleStatusHistory>(this);
 
   @ManyToOne(() => ArticleCategory)
   public readonly category: ArticleCategory;
@@ -118,6 +125,13 @@ export class Article extends AbstractEntity {
       : [];
   }
 
+  @Property({ persist: false })
+  public get statusHistoryList(): ArticleStatusHistory[] {
+    return this.statusHistoryCollection.isInitialized()
+      ? this.statusHistoryCollection.getItems()
+      : [];
+  }
+
   public constructor({
     type,
     category,
@@ -137,8 +151,5 @@ export class Article extends AbstractEntity {
     this.type = type;
     this.category = category;
     this.owner = owner;
-    this.statusHistory = [
-      new ArticleStatusHistory(ArticleStatusEnum.PROCESSING),
-    ];
   }
 }

@@ -8,7 +8,7 @@ import { ArticleType } from '@models/article-types';
 import { FilterCitiesDto } from '@models/cities';
 import { Question, QuestionTypeEnum } from '@models/questions';
 import { Storage } from '@models/storage';
-import { User } from '@models/users';
+import { RoleEnum, User } from '@models/users';
 import {
   BadRequestException,
   Injectable,
@@ -27,6 +27,7 @@ import {
   CreateArticleRequestDto,
   GetArticleListResponseDto,
   ProcessArticleRequestDto,
+  ReviewRejectionRequestDto,
   SortArticlesDto,
   UpdateArticleRequestDto,
 } from './dto';
@@ -34,9 +35,10 @@ import {
   Article,
   ArticleFile,
   ArticleQuestion,
+  ArticleReviewerComment,
   ArticleStatusHistory,
 } from './entities';
-import { ArticleStatusEnum } from './enums';
+import { ArticleCommentTypeEnum, ArticleStatusEnum } from './enums';
 
 @Injectable()
 export class ArticlesService {
@@ -49,22 +51,34 @@ export class ArticlesService {
   public async processArticle(
     articleId: EntityId,
     inputs: ProcessArticleRequestDto,
+    managerId: EntityId,
   ): Promise<GeneralResponseDto> {
     const article = await this._entityManager.findOneOrFail(Article, {
       id: articleId,
     });
+    const manager = await this._entityManager.findOneOrFail(User, {
+      id: managerId,
+    });
     const juror = await this._entityManager.findOneOrFail(User, {
       id: inputs.jurorId,
+      roleList: { $contains: [RoleEnum.JUROR] },
     });
     const editor = await this._entityManager.findOneOrFail(User, {
       id: inputs.editorId,
+      roleList: { $contains: [RoleEnum.EDITOR] },
     });
-    const articleHistory = new ArticleStatusHistory(ArticleStatusEnum.JUDGING);
+    const articleHistory = new ArticleStatusHistory(
+      ArticleStatusEnum.JUDGING,
+      RoleEnum.MANAGER,
+    );
+    wrap(articleHistory).assign({
+      affectedBy: manager,
+    });
     wrap(article).assign({
       status: ArticleStatusEnum.JUDGING,
       juror: juror,
       editor: editor,
-      statusHistory: [...article.statusHistory, articleHistory],
+      statusHistoryCollection: [...article.statusHistoryList, articleHistory],
     });
     await this._entityManager.persistAndFlush(article);
     return {
@@ -87,11 +101,12 @@ export class ArticlesService {
           'fileCollection.type',
           'fileCollection.storage',
           'questionCollection.question',
+          'statusHistoryCollection.affectedBy',
+          'reviewerCommentCollection',
         ],
       },
     );
     if (!article) throw new NotFoundException();
-    console.log(article.questionList);
     return article;
   }
 
@@ -106,6 +121,15 @@ export class ArticlesService {
         Article,
         MikroOrmHelper.convertFilterDtoToQueryFilter(filters),
         {
+          fields: [
+            'id',
+            'createdAt',
+            'updatedAt',
+            'status',
+            'owner',
+            'subject',
+            'shortDescription',
+          ],
           orderBy: MikroOrmHelper.convertSortDtoToQueryOrderList(sorts),
           limit,
           offset,
@@ -116,6 +140,34 @@ export class ArticlesService {
       articleList,
       pageMetaDto,
     );
+  }
+
+  public async publishArticle(
+    articleId: EntityId,
+    managerId: EntityId,
+  ): Promise<GeneralResponseDto> {
+    const article = await this._entityManager.findOneOrFail(Article, {
+      id: articleId,
+      status: ArticleStatusEnum.FINALIZING,
+    });
+    const manager = await this._entityManager.findOneOrFail(User, {
+      id: managerId,
+    });
+    const articleStatusHistory = new ArticleStatusHistory(
+      ArticleStatusEnum.PUBLISHED,
+      RoleEnum.MANAGER,
+    );
+    wrap(articleStatusHistory).assign({
+      affectedBy: manager,
+    });
+    wrap(article).assign({
+      status: ArticleStatusEnum.PUBLISHED,
+    });
+    await this._entityManager.persistAndFlush(article);
+    return {
+      isSuccess: true,
+      message: 'Article published successfully',
+    };
   }
 
   public async createArticle(
@@ -146,7 +198,10 @@ export class ArticlesService {
         id: { $in: inputs.fileList.map((file) => file.typeId) },
       },
     );
-    if (articleFileTypeList.length !== inputs.fileList.length)
+    const articleFileTypeSet = new Set(
+      inputs.fileList.map((file) => file.typeId),
+    );
+    if (articleFileTypeList.length !== articleFileTypeSet.size)
       throw new BadRequestException('article file types not found');
 
     const questionListOfSubmittingArticle = await this._entityManager.find(
@@ -188,6 +243,13 @@ export class ArticlesService {
       keywordList: inputs.keywordList,
       owner,
     });
+    const articleStatusHistory = new ArticleStatusHistory(
+      ArticleStatusEnum.PROCESSING,
+      RoleEnum.USER,
+    );
+    wrap(articleStatusHistory).assign({
+      affectedBy: owner,
+    });
     wrap(article).assign({
       fileCollection: inputs.fileList.map((file) => {
         const storage = storageList.find(
@@ -204,6 +266,7 @@ export class ArticlesService {
         return articleFile;
       }),
       questionCollection: articleQuestionList,
+      statusHistoryCollection: [articleStatusHistory],
     });
     await this._entityManager.persistAndFlush(article);
     return {
@@ -242,5 +305,172 @@ export class ArticlesService {
       category: articleCategory,
       // fileList: storageList,
     });
+  }
+
+  public async rejectArticleByJuror(
+    articleId: EntityId,
+    inputs: ReviewRejectionRequestDto,
+    jurorId: EntityId,
+  ): Promise<GeneralResponseDto> {
+    const article = await this._entityManager.findOneOrFail(
+      Article,
+      {
+        id: articleId,
+        status: ArticleStatusEnum.JUDGING,
+        juror: { id: jurorId },
+      },
+      {
+        populate: ['statusHistoryCollection', 'reviewerCommentCollection'],
+      },
+    );
+    const juror = await this._entityManager.findOneOrFail(User, {
+      id: jurorId,
+    });
+    const newArticleReviewComment = new ArticleReviewerComment(
+      inputs.comment,
+      ArticleCommentTypeEnum.JUDGING,
+    );
+    const newArticleStatusHistory = new ArticleStatusHistory(
+      ArticleStatusEnum.REJECTED,
+      RoleEnum.JUROR,
+    );
+    wrap(newArticleStatusHistory).assign({ affectedBy: juror });
+    wrap(article).assign({
+      status: ArticleStatusEnum.REJECTED,
+      reviewerCommentCollection: [
+        ...article.reviewerCommentList,
+        newArticleReviewComment,
+      ],
+      statusHistoryCollection: [
+        ...article.statusHistoryList,
+        newArticleStatusHistory,
+      ],
+    });
+    await this._entityManager.persistAndFlush(article);
+    return {
+      isSuccess: true,
+      message: 'Article processed successfully',
+    };
+  }
+
+  public async acceptArticleByJuror(
+    articleId: EntityId,
+    jurorId: EntityId,
+  ): Promise<GeneralResponseDto> {
+    console.log(jurorId);
+    const article = await this._entityManager.findOneOrFail(
+      Article,
+      {
+        id: articleId,
+        status: ArticleStatusEnum.JUDGING,
+        juror: { id: jurorId },
+      },
+      {
+        populate: ['statusHistoryCollection', 'reviewerCommentCollection'],
+      },
+    );
+    const newArticleStatusHistory = new ArticleStatusHistory(
+      ArticleStatusEnum.EDITING,
+      RoleEnum.JUROR,
+    );
+    const juror = await this._entityManager.findOneOrFail(User, {
+      id: jurorId,
+    });
+    wrap(newArticleStatusHistory).assign({ affectedBy: juror });
+    wrap(article).assign({
+      status: ArticleStatusEnum.EDITING,
+      statusHistoryCollection: [
+        ...article.statusHistoryList,
+        newArticleStatusHistory,
+      ],
+    });
+    await this._entityManager.persist(article);
+    return {
+      isSuccess: true,
+      message: 'Article accepted by juror successfully',
+    };
+  }
+
+  public async rejectArticleByEditor(
+    articleId: EntityId,
+    inputs: ReviewRejectionRequestDto,
+    editorId: EntityId,
+  ): Promise<GeneralResponseDto> {
+    const article = await this._entityManager.findOneOrFail(
+      Article,
+      {
+        id: articleId,
+        status: ArticleStatusEnum.EDITING,
+        editor: { id: editorId },
+      },
+      {
+        populate: ['statusHistoryCollection', 'reviewerCommentCollection'],
+      },
+    );
+    const editor = await this._entityManager.findOneOrFail(User, {
+      id: editorId,
+    });
+    const newArticleReviewComment = new ArticleReviewerComment(
+      inputs.comment,
+      ArticleCommentTypeEnum.EDITING,
+    );
+    const newArticleStatusHistory = new ArticleStatusHistory(
+      ArticleStatusEnum.REJECTED,
+      RoleEnum.JUROR,
+    );
+    wrap(newArticleStatusHistory).assign({ affectedBy: editor });
+    wrap(article).assign({
+      status: ArticleStatusEnum.REJECTED,
+      reviewerCommentCollection: [
+        ...article.reviewerCommentList,
+        newArticleReviewComment,
+      ],
+      statusHistoryCollection: [
+        ...article.statusHistoryList,
+        newArticleStatusHistory,
+      ],
+    });
+    await this._entityManager.persistAndFlush(article);
+    return {
+      isSuccess: true,
+      message: 'Article processed successfully',
+    };
+  }
+
+  public async acceptArticleByEditor(
+    articleId: EntityId,
+    editorId: EntityId,
+  ): Promise<GeneralResponseDto> {
+    const article = await this._entityManager.findOneOrFail(
+      Article,
+      {
+        id: articleId,
+        status: ArticleStatusEnum.EDITING,
+        editor: { id: editorId },
+      },
+      {
+        populate: ['statusHistoryCollection', 'reviewerCommentCollection'],
+      },
+    );
+    const newArticleStatusHistory = new ArticleStatusHistory(
+      ArticleStatusEnum.EDITING,
+      RoleEnum.EDITOR,
+    );
+    const editor = await this._entityManager.findOneOrFail(User, {
+      id: editorId,
+    });
+    wrap(newArticleStatusHistory).assign({ affectedBy: editor });
+    wrap(article).assign({
+      status: ArticleStatusEnum.FINALIZING,
+      statusHistoryCollection: [
+        ...article.statusHistoryList,
+        newArticleStatusHistory,
+      ],
+    });
+    await this._entityManager.persist(article);
+    return {
+      isSuccess: true,
+      message: 'Article accepted by editor successfully',
+    };
   }
 }

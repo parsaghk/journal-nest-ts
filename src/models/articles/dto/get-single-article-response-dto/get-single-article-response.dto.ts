@@ -5,6 +5,7 @@ import { Expose, Type } from 'class-transformer';
 import { ArticleAuthorResponseDto } from './article-author-response-dto';
 import { ArticleFileResponse } from './article-file-response.dto';
 import { ArticleQuestionResponseDto } from './article-question-response.dto';
+import { ArticleStatusHistory } from './article-status-history.dto';
 
 export class GetSingleArticleResponseDto {
   @Expose()
@@ -20,6 +21,10 @@ export class GetSingleArticleResponseDto {
   @Expose()
   @Type(() => ArticleQuestionResponseDto)
   public readonly questionList: ArticleQuestionResponseDto[];
+
+  @Expose()
+  @Type(() => ArticleStatusHistory)
+  public readonly statusHistoryList: ArticleStatusHistory[];
 
   @Expose()
   @Type(() => ArticleAuthorResponseDto)
