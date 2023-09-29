@@ -26,7 +26,7 @@ export class User extends AbstractEntity {
   public readonly password: string;
 
   @Enum({ items: () => UserStatus, default: UserStatus.ACTIVE })
-  public readonly status: UserStatus;
+  public readonly status: UserStatus = UserStatus.ACTIVE;
 
   @Property({ nullable: true })
   public readonly position?: string;
